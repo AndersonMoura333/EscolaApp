@@ -19,4 +19,4 @@ firebase login
 firebase init
 firebase deploy
 firebase deploy --only hosting
-firebase use --add escola-59267
+firebase use --add escolaapp-3a98e
