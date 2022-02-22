@@ -1,0 +1,22 @@
+<ion-header>
+  <ion-navbar>
+    <button ion-button menuToggle>
+      <ion-icon name="menu"></ion-icon>
+    </button>
+    <ion-title>Usuários</ion-title>
+  </ion-navbar>
+</ion-header>
+
+<ion-content>
+
+  <ion-list *ngFor="let item of usuarios">
+    <ion-item>
+      <ion-avatar item-start>
+        <img src="img/avatar-cher.png">
+      </ion-avatar>
+      <h2>{{item.nome}}</h2>
+      <p>{{item.email}}</p>
+    </ion-item>
+  </ion-list>
+
+</ion-content>

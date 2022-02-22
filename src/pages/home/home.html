@@ -1,0 +1,21 @@
+<ion-header>
+  <ion-navbar>
+    <button ion-button menuToggle>
+      <ion-icon name="menu"></ion-icon>
+    </button>
+    <ion-title>Home</ion-title>
+  </ion-navbar>
+</ion-header>
+
+<ion-content padding>
+  <ion-list>
+
+    <ion-item>
+      <ion-label stacked>CEP</ion-label>
+      <ion-input type="text" [(ngModel)]="cep"></ion-input>
+    </ion-item>
+
+  </ion-list>
+
+  <button ion-button secondary (click)="buscarCep()">Buscar</button>
+</ion-content>
