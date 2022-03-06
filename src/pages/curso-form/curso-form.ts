@@ -42,11 +42,11 @@ export class CursoFormPage {
 
     if(this.cursoID){
       this.presentToast('Dados atualizados com sucesso')
-      this.cursoProvider.atualizar(this.cursoID,this.curso);
+      this.cursoProvider.atualizarFS(this.cursoID,this.curso);
       this.navCtrl.pop();
     }else{
 
-      this.cursoProvider.inserir(this.curso).then(curso =>{
+      this.cursoProvider.inserirFS(this.curso).then(curso =>{
         this.presentToast('curso adicionado com sucesso');
         this.navCtrl.pop();
       })
@@ -71,7 +71,7 @@ export class CursoFormPage {
         {
           text: 'Excluir',
           handler: () => {
-            this.cursoProvider.remover(this.cursoID).then(_dados =>{
+            this.cursoProvider.removerFS(this.cursoID).then(_dados =>{
               console.log('excluido');
               this.navCtrl.setRoot('CursoListPage')
             })

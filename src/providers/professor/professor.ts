@@ -1,42 +1,58 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { AngularFireDatabase } from 'angularfire2/database';
+import { AngularFirestore } from 'angularfire2/firestore';
 
-/*
-  Generated class for the ProfessorProvider provider.
-
-  See https://angular.io/guide/dependency-injection for more info on providers
-  and Angular DI.
-*/
 @Injectable()
 export class ProfessorProvider {
 
-  constructor(public http: HttpClient,
-              public afd: AngularFireDatabase,
-    ) {
-    console.log('Hello professoresProvider Provider');
+  ENTIDADE = '/professores';
+
+  constructor(public http: HttpClient, 
+    public afd: AngularFireDatabase,
+    public afs: AngularFirestore) {
   }
 
-  listar(){
-    return this.afd.list('/professores').snapshotChanges().map(
-      item => item.map(changes => ({key: changes.key, value: changes.payload.val()}))
-    );
+  listar() {
+    // return this.afd.list('/alunos').valueChanges();
+    return this.afd.list(this.ENTIDADE)
+      .snapshotChanges()
+      .map(item => item.map(changes => ({key: changes.payload.key, value: changes.payload.val() })));
   }
 
-  inserir(professor){
-    return this.afd.list('/professores').push(professor);
-
+  listarFS() { // firestore_db
+    // return this.afs.collection(this.ENTIDADE).valueChanges();
+    return this.afs.collection(this.ENTIDADE)
+      .snapshotChanges()
+      .map(item => item.map(changes => ({key: changes.payload.doc.id, value: changes.payload.doc.data() })))
   }
 
-  atualizar(id, professor){
-    return this.afd.object('/professores/' + id).update(professor);
-
+  inserir(aluno) {
+    return this.afd.list(this.ENTIDADE).push(aluno);
   }
 
-  remover(id){
-
-    return this.afd.object('/professores/' + id).remove();
-
+  inserirFS(entidade) { // firestore_db
+    // Converte a entidade Aluno para um objeto json generico
+    const obj = JSON.parse(JSON.stringify(entidade));
+    
+    const id = this.afs.createId();
+    return this.afs.doc(this.ENTIDADE + '/' + id).set(obj);
   }
+
+  atualizar(id, aluno) {
+    return this.afd.object(this.ENTIDADE + '/' + id).update(aluno);
+  }
+
+  atualizarFS(id, entidade) { // firestore_db
+    return this.afs.doc(this.ENTIDADE + '/' + id).update(entidade);
+  }
+
+  remover(id) {
+    return this.afd.object(this.ENTIDADE + '/' + id).remove();
+  }
+
+  removerFS(id) { // firestore_db
+    return this.afs.doc(this.ENTIDADE + '/' + id).delete();
+  }
+
 }
-

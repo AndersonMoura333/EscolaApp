@@ -51,7 +51,8 @@ export class AlunoListPage {
         }else{
 
           let cidade = _params.cidade;
-          this. alunoProvider.buscar(cidade).subscribe(_alunos => {
+          let uf = _params.uf;
+          this. alunoProvider.buscarFS(uf,cidade).subscribe(_alunos => {
             this.alunos = _alunos;
           })
         }
@@ -62,7 +63,7 @@ export class AlunoListPage {
   }
 
   carregaLista() {
-    this.alunoProvider.listar().subscribe(_data => {
+    this.alunoProvider.listarFS().subscribe(_data => {
       console.log(_data);
       this.alunos = _data;
     })

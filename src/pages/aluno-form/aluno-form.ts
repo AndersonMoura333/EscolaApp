@@ -42,11 +42,11 @@ export class AlunoFormPage {
 
     if(this.alunoID){
       this.presentToast('Dados atualizados com sucesso')
-      this.alunoProvider.atualizar(this.alunoID,this.aluno);
+      this.alunoProvider.atualizarFS(this.alunoID,this.aluno);
       this.navCtrl.pop();
     }else{
 
-      this.alunoProvider.inserir(this.aluno).then(aluno =>{
+      this.alunoProvider.inserirFS(this.aluno).then(aluno =>{
         this.presentToast('Aluno adicionado com sucesso');
         this.navCtrl.pop();
       })
@@ -71,7 +71,7 @@ export class AlunoFormPage {
         {
           text: 'Excluir',
           handler: () => {
-            this.alunoProvider.remover(this.alunoID).then(_dados =>{
+            this.alunoProvider.removerFS(this.alunoID).then(_dados =>{
               console.log('excluido');
               this.navCtrl.setRoot('AlunoListPage')
             })

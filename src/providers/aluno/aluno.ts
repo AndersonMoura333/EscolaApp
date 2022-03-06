@@ -1,49 +1,89 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { AngularFireDatabase } from 'angularfire2/database';
-import { addListener } from 'process';
+import { AngularFirestore } from 'angularfire2/firestore';
+import { ActionSheet } from 'ionic-angular';
+import { Aluno } from '../../models/aluno';
 
-/*
-  Generated class for the AlunosProvider provider.
-
-  See https://angular.io/guide/dependency-injection for more info on providers
-  and Angular DI.
-*/
 @Injectable()
 export class AlunoProvider {
 
-  constructor(public http: HttpClient,
-              public afd: AngularFireDatabase,
+  ENTIDADE = '/alunos';
+
+  constructor(public http: HttpClient, 
+    public afd: AngularFireDatabase,
+    public afs: AngularFirestore
     ) {
-    console.log('Hello AlunosProvider Provider');
   }
 
-  listar(){
-    return this.afd.list('/alunos').snapshotChanges().map(
-      item => item.map(changes => ({key: changes.key, value: changes.payload.val()}))
-    );
+  listar() { // realtime_db
+    // return this.afd.list('/alunos').valueChanges();
+    return this.afd.list(this.ENTIDADE)
+      .snapshotChanges()
+      .map(item => item.map(changes => ({key: changes.payload.key, value: changes.payload.val() })));
   }
 
-  buscar(cidade: string){
-    return this.afd.list('/alunos', ref=> ref.orderByChild('cidade').equalTo(cidade)).snapshotChanges().map(
-      item => item.map(changes => ({key: changes.key, value: changes.payload.val()}))
-    );
+  listarFS() { // firestore_db
+    // return this.afs.collection(this.ENTIDADE).valueChanges();
+    return this.afs.collection(this.ENTIDADE)
+      .snapshotChanges()
+      .map(item => item.map(changes => ({key: changes.payload.doc.id, value: changes.payload.doc.data() })))
   }
 
-  inserir(aluno){
-    return this.afd.list('/alunos').push(aluno);
-
+  buscar(cidade: string) { // realtime_db
+    return this.afd.list(this.ENTIDADE, ref => ref.orderByChild('cidade').equalTo(cidade))
+      .snapshotChanges()
+      .map(item => item.map(changes => ({key: changes.payload.key, value: changes.payload.val() })));
   }
 
-  atualizar(id, aluno){
-    return this.afd.object('/alunos/' + id).update(aluno);
+  buscarFS(uf: string, cidade: string) { // firestore_db
+    console.log(uf);
+    console.log(cidade);
 
+    return this.afs.collection(this.ENTIDADE,
+        ref => ref
+          .where('uf', '==', uf)
+          .where('cidade', '==', cidade)
+          .orderBy('nome')
+      )
+      .snapshotChanges()
+      .map(item => item.map(changes => ({key: changes.payload.doc.id, value: changes.payload.doc.data() })))
   }
 
-  remover(id){
-
-    return this.afd.object('/alunos/' + id).remove();
-
+  inserir(aluno) { // realtime_db
+    return this.afd.list(this.ENTIDADE).push(aluno);
   }
+
+  inserirFS(aluno: Aluno) { // firestore_db
+    // const obj = {
+    //   nome: aluno.nome,
+    //   telefone: aluno.telefone,
+    //   matricula: aluno.matricula,
+    //   cidade: aluno.cidade,
+    //   uf: aluno.uf,
+    // }
+
+    // Converte a entidade Aluno para um objeto json generico
+    const obj = JSON.parse(JSON.stringify(aluno));
+    
+    const id = this.afs.createId();
+    return this.afs.doc(this.ENTIDADE + '/' + id).set(obj);
+  }
+
+  atualizar(id, aluno) { // realtime_db
+    return this.afd.object(this.ENTIDADE + '/' + id).update(aluno);
+  }
+
+  atualizarFS(id, aluno) { // firestore_db
+    return this.afs.doc(this.ENTIDADE + '/' + id).update(aluno);
+  }
+
+  remover(id) { // realtime_db
+    return this.afd.object(this.ENTIDADE + '/' + id).remove();
+  }
+
+  removerFS(id) { // firestore_db
+    return this.afs.doc(this.ENTIDADE + '/' + id).delete();
+  }
+
 }
-

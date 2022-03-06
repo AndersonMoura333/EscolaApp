@@ -23,7 +23,7 @@ export class CursoListPage {
     public cursoProvider: CursoProvider,
     ) {
 
-      this. cursoProvider.listar().subscribe(_cursos => {
+      this. cursoProvider.listarFS().subscribe(_cursos => {
         this.cursos = _cursos;
       })
   }

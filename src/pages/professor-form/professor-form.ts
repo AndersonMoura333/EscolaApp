@@ -42,11 +42,11 @@ export class ProfessorFormPage {
 
     if(this.professorID){
       this.presentToast('Dados atualizados com sucesso')
-      this.professorProvider.atualizar(this.professorID,this.professor);
+      this.professorProvider.atualizarFS(this.professorID,this.professor);
       this.navCtrl.pop();
     }else{
 
-      this.professorProvider.inserir(this.professor).then(professor =>{
+      this.professorProvider.inserirFS(this.professor).then(professor =>{
         this.presentToast('professor adicionado com sucesso');
         this.navCtrl.pop();
       })
@@ -71,7 +71,7 @@ export class ProfessorFormPage {
         {
           text: 'Excluir',
           handler: () => {
-            this.professorProvider.remover(this.professorID).then(_dados =>{
+            this.professorProvider.removerFS(this.professorID).then(_dados =>{
               console.log('excluido');
               this.navCtrl.setRoot('ProfessorListPage')
             })
